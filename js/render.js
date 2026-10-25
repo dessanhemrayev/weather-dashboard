@@ -317,20 +317,13 @@ export function renderCompare(state, root) {
     );
   }
 
-  const dayCount = Math.min(
-    7,
-    Math.max(...withData.map((city) => state.forecasts[city.id]?.daily?.length ?? 0), 0)
-  );
-  const dates = [];
-  for (let i = 0; i < dayCount; i += 1) {
-    const source = withData.find((city) => {
-      const days = state.forecasts[city.id]?.daily;
-      return Array.isArray(days) && !!days[i];
-    });
-    if (!source) continue;
-    const day = state.forecasts[source.id]?.daily?.[i];
-    if (day?.date) dates.push(day.date);
-  }
+  const dates = Array.from(
+    new Set(
+      withData.flatMap((city) => state.forecasts[city.id]?.daily?.map((day) => day.date) ?? [])
+    )
+  )
+    .sort()
+    .slice(0, 7);
 
   const headerRow = h(
     'tr',
@@ -338,12 +331,15 @@ export function renderCompare(state, root) {
     h('th', { scope: 'col', text: 'День' }),
     cities.map((city) => h('th', { scope: 'col', title: cityTitle(city), text: city.name }))
   );
-  const rows = dates.map((date, i) =>
+  const rows = dates.map((date) =>
     h(
       'tr',
       {},
       h('th', { scope: 'row', text: formatDay(date) }),
-      cities.map((city) => metricCell(state.compare.metric, state.forecasts[city.id]?.daily[i]))
+      cities.map((city) => {
+        const day = state.forecasts[city.id]?.daily?.find((item) => item.date === date);
+        return metricCell(state.compare.metric, day);
+      })
     )
   );
 
