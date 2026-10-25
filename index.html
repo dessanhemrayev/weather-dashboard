@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Погодный дашборд</title>
+  <meta name="description" content="Избранные города и сравнение прогнозов погоды на данных Open-Meteo">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>Погодный дашборд</h1>
+    <p class="muted">Данные: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a></p>
+  </header>
+
+  <main class="layout">
+    <noscript><p class="message message--error">Для работы приложения нужен JavaScript.</p></noscript>
+
+    <section class="section" aria-labelledby="search-title">
+      <h2 id="search-title">Добавить город</h2>
+      <form class="search" data-role="search-form" role="search" autocomplete="off">
+        <label class="visually-hidden" for="city-search">Название города</label>
+        <input id="city-search" class="input" type="search" data-role="search-input"
+               placeholder="Например, Курск" maxlength="60" enterkeyhint="search">
+        <button class="btn btn--primary" type="submit">Найти</button>
+      </form>
+      <div data-region="search-results" aria-live="polite"></div>
+    </section>
+
+    <section class="section" aria-labelledby="favorites-title">
+      <div class="section__head">
+        <h2 id="favorites-title">Избранные города <span class="badge" data-role="favorites-count">0</span></h2>
+        <button class="btn" type="button" data-action="refresh" disabled>Обновить</button>
+      </div>
+
+      <div class="controls" data-region="controls">
+        <div class="controls__row">
+          <label class="visually-hidden" for="city-filter">Фильтр по названию</label>
+          <input id="city-filter" class="input" type="search" data-role="filter-input"
+                 placeholder="Фильтр по названию" maxlength="60">
+          <label class="check">
+            <input type="checkbox" data-role="only-rain">
+            <span>Только с осадками</span>
+          </label>
+        </div>
+        <div class="controls__row">
+          <span class="muted">Сортировка:</span>
+          <div class="chips" data-slot="sort" role="group" aria-label="Сортировка"></div>
+        </div>
+      </div>
+
+      <div data-region="status" aria-live="polite"></div>
+      <div data-region="favorites"></div>
+    </section>
+
+    <section class="section" data-region="compare" aria-live="polite"></section>
+  </main>
+</body>
+</html>
