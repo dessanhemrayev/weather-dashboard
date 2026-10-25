@@ -317,11 +317,19 @@ export function renderCompare(state, root) {
     );
   }
 
-  const dayCount = Math.min(7, Math.max(...withData.map((city) => state.forecasts[city.id].daily.length)));
+  const dayCount = Math.min(
+    7,
+    Math.max(...withData.map((city) => state.forecasts[city.id]?.daily?.length ?? 0), 0)
+  );
   const dates = [];
   for (let i = 0; i < dayCount; i += 1) {
-    const source = withData.find((city) => state.forecasts[city.id].daily[i]);
-    dates.push(state.forecasts[source.id].daily[i].date);
+    const source = withData.find((city) => {
+      const days = state.forecasts[city.id]?.daily;
+      return Array.isArray(days) && !!days[i];
+    });
+    if (!source) continue;
+    const day = state.forecasts[source.id]?.daily?.[i];
+    if (day?.date) dates.push(day.date);
   }
 
   const headerRow = h(
